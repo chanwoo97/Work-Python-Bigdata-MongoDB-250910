@@ -1,7 +1,7 @@
 // ✅ 1. 대량 데이터 추가(반복문 사용)
 // 먼저, db.products 컬렉션에 100,000개의 샘플 데이터를 삽입합니다.
 
-for (let i = 0; i < 1000000; i++) {
+for (let i = 0; i < 100000; i++) {
   db.products.insertOne({
     name: "Product_" + i,
     category: i % 5 == 0 ? "Electronics" : "Home",
@@ -40,6 +40,13 @@ db.products.getIndexes();
 db.products.getIndexes();
 db.products.dropIndex("category_1");
 db.products.createIndex({ category: 1, price: -1 });
+
+// 예시)
+// 순서1 카테고리 : home , 가격 : 2000
+// 순서2 카테고리 : home , 가격 : 1000
+// 순서3 카테고리 : zip , 가격 : 4000
+// 순서4 카테고리 : zip , 가격 : 3000
+
 // ✅ category와 price를 조합하여 검색 최적화
 // ✅ price는 내림차순(-1) 정렬
 // 복합 인덱스에서,
