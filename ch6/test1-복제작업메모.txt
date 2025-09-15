@@ -4,36 +4,66 @@
 
 각 구역 폴더 만들기. 
 
+참고 설명. 
+각 옵션이 어떤 의미를 가지는지 하나씩 살펴보겠습니다.
+
+mongod
+
+몽고디비의 핵심 데이터베이스 프로세스, 
+즉 서버 자체를 실행하는 기본 명령어입니다.
+
+--replSet rs0
+
+이 mongod 인스턴스가 리플리카셋(Replica Set)에 포함되도록 설정합니다. 
+리플리카셋은 데이터의 복제본을 여러 서버에 저장하여 
+**고가용성(High Availability)**과 데이터 안정성을 확보하는 기술입니다.
+
+rs0는 해당 리플리카셋의 고유한 이름입니다. 
+rs0라는 이름표를 가진 팀에 합류하는 것과 같습니다.
+
+--port 27018
+
+몽고디비 서버가 클라이언트의 연결을 기다릴 포트 번호를 지정합니다.
+
+몽고디비의 기본 포트는 27017이지만, 
+이 명령어에서는 27018 포트를 사용하도록 설정했습니다. 
+한 컴퓨터에서 여러 몽고디비 서버를 띄울 때 주로 사용됩니다.
+
+--bind_ip 0.0.0.0
+
+서버가 어떤 IP 주소로부터의 접속을 허용할지 설정합니다.
+
+0.0.0.0은 **모든 네트워크 인터페이스(IP 주소)**로부터의 연결을 허용하라는 의미입니다. 
+즉, 로컬 컴퓨터(localhost)뿐만 아니라 외부 네트워크에서도 이 서버에 접속할 수 있게 됩니다.
+
+⚠️ 보안 주의: 방화벽 등 별도의 보안 설정 없이 
+이 옵션을 프로덕션 환경에서 사용하면 데이터베이스가 
+외부에 무방비로 노출될 수 있으니 주의해야 합니다.
+
+--dbpath /db/data/rs0-0
+
+데이터베이스의 모든 데이터 파일(컬렉션, 인덱스 등)이 저장될 디렉토리 경로를 지정합니다.
+
+이 서버의 모든 데이터는 /db/data/rs0-0 폴더 안에 생성되고 관리됩니다.
+
 mkdir c:\db\data\rs0-0
 mkdir c:\db\data\rs0-1
 mkdir c:\db\data\rs0-2
 
-mkdir c:\db\data\test0-0
-mkdir c:\db\data\test0-1
-mkdir c:\db\data\test0-2
-
 	1. C:/db/data/rs0-0
 	2. C:/db/data/rs0-1
-	3. C:/db/data/rs0-2s
-
-    1. C:/db/data/test0-0
-	2. C:/db/data/test0-1
-	3. C:/db/data/test0-2
+	3. C:/db/data/rs0-2
 
 명령어 창1 현제, 10.100.201.87
 mongod --replSet rs0 --port 27018 --bind_ip 0.0.0.0 --dbpath /db/data/rs0-0
 
-mongod --replSet test0 --port 27018 --bind_ip 0.0.0.0 --dbpath /db/data/test0-0
+팀원과 할땐 bind_ip 0.0.0.0으로 해야함. localhost 사용하면 안됨.
 
 명령어 창2
 mongod --replSet rs0 --port 27019 --bind_ip localhost --dbpath /db/data/rs0-1
 
-mongod --replSet test0 --port 27019 --bind_ip localhost --dbpath /db/data/test0-1
-
 명령어 창3
 mongod --replSet rs0 --port 27020 --bind_ip localhost --dbpath /db/data/rs0-2
-
-mongod --replSet test0 --port 27020 --bind_ip localhost --dbpath /db/data/test0-2
 
 명령어 창4 여기서 새로 접속 -> 총 명령어창 4개.
 조장. 자기 서버 
@@ -50,17 +80,6 @@ members: [
 {_id:0, host:"localhost:27018"},
 {_id:1, host:"localhost:27019"},
 {_id:2, host:"localhost:27020"}
-]
-}
-)
-
-rs.initiate(
-{
-_id : "test0",
-members: [
-{_id:0, host:"10.100.201.36:27018"},
-{_id:1, host:"10.100.201.36:27019"},
-{_id:2, host:"10.100.201.36:27020"}
 ]
 }
 )

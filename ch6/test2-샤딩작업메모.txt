@@ -1,18 +1,18 @@
 주의사항, 몽고스 중개라우터, 설정 서버 같은 곳에서 일단 하기.
 
-설정 서버 구성 - 상용1
+설정 서버 구성
 1
-mkdir d:\db2\data\config0-0
-mkdir d:\db2\data\config0-1
-mkdir d:\db2\data\config0-2
+mkdir c:\db2\data\config0-0
+mkdir c:\db2\data\config0-1
+mkdir c:\db2\data\config0-2
 
-2 각 창에 명령어를 하나씩 실행해야 함. 
-명령어창에서, c드라이브에서 -> d드라이브로 교체, d: 
-
-mongod --configsvr --replSet config0 --port 27018 --bind_ip 0.0.0.0 --dbpath /db2/data/config0-0 
+2 
+각 창에 명령어를 하나씩 실행해야 함. 
+명령어창에서, d드라이브에서 -> c드라이브로 교체, c:
+경로에 맞게 유동적으로 설정하면 됨. 로컬c or 로컬d
+mongod --configsvr --replSet config0 --port 27018 --bind_ip 0.0.0.0 --dbpath /db2/data/config0-0
 mongod --configsvr --replSet config0 --port 27019 --bind_ip 0.0.0.0 --dbpath /db2/data/config0-1
 mongod --configsvr --replSet config0 --port 27020 --bind_ip 0.0.0.0 --dbpath /db2/data/config0-2
-
 
 3
 mongosh --port 27018
@@ -30,15 +30,17 @@ members: [
 }
 )
 
+----------------------------------------------------------------------------------------------------------
 
-샤드 구성1 - 상용2
+샤드 구성 - 1
 1
-mkdir d:\db2\data\shard0-0
-mkdir d:\db2\data\shard0-1
-mkdir d:\db2\data\shard0-2
+mkdir c:\db2\data\shard0-0
+mkdir c:\db2\data\shard0-1
+mkdir c:\db2\data\shard0-2
 
-2 각 창에 명령어를 하나씩 실행해야 함. 
-mongod --shardsvr --replSet shard0 --port 27021 --bind_ip 0.0.0.0 --dbpath /db2/data/shard0-0 
+2 
+각 창에 명령어를 하나씩 실행해야 함. 
+mongod --shardsvr --replSet shard0 --port 27021 --bind_ip 0.0.0.0 --dbpath /db2/data/shard0-0
 mongod --shardsvr --replSet shard0 --port 27022 --bind_ip 0.0.0.0 --dbpath /db2/data/shard0-1
 mongod --shardsvr --replSet shard0 --port 27023 --bind_ip 0.0.0.0 --dbpath /db2/data/shard0-2
 
@@ -46,6 +48,7 @@ mongod --shardsvr --replSet shard0 --port 27023 --bind_ip 0.0.0.0 --dbpath /db2/
 mongosh --port 27021
 
 4
+다른 팀원과 할때는 상대방의 아이피 또는 본인 아이피를 입력
 rs.initiate(
 {
 _id : "shard0",
@@ -57,17 +60,8 @@ members: [
 }
 )
 
-rs.initiate(
-{
-_id : "shard0",
-members: [
-{_id:0, host:"10.100.201.87:27021"},
-{_id:1, host:"10.100.201.87:27022"},
-{_id:2, host:"10.100.201.87:27023",arbiterOnly: true}
-]
-}
-)
 
+혼자서 샤딩 서버 구성시에는 다 동일하게 성정해야해서 localhost 유지
 rs.initiate(
 {
 _id : "shard0",
@@ -79,14 +73,16 @@ members: [
 }
 )
 
+--------------------------------------------------------------------------------------------------
 
-샤드 구성2 - 상용3
+샤드 구성 - 2
 1
-mkdir d:\db2\data\shard1-0
-mkdir d:\db2\data\shard1-1
-mkdir d:\db2\data\shard1-2
+mkdir c:\db2\data\shard1-0
+mkdir c:\db2\data\shard1-1
+mkdir c:\db2\data\shard1-2
 
-2 각 창에 명령어를 하나씩 실행해야 함. 
+2 
+각 창에 명령어를 하나씩 실행해야 함. 
 mongod --shardsvr --replSet shard1 --port 27031 --bind_ip 0.0.0.0 --dbpath /db2/data/shard1-0
 mongod --shardsvr --replSet shard1 --port 27032 --bind_ip 0.0.0.0 --dbpath /db2/data/shard1-1
 mongod --shardsvr --replSet shard1 --port 27033 --bind_ip 0.0.0.0 --dbpath /db2/data/shard1-2
@@ -117,13 +113,16 @@ members: [
 }
 )
 
-샤드 구성3- 상용4
-1
-mkdir d:\db2\data\shard2-0
-mkdir d:\db2\data\shard2-1
-mkdir d:\db2\data\shard2-2
+----------------------------------------------------------------------------------------------------
 
-2 각 창에 명령어를 하나씩 실행해야 함. 
+샤드 구성 - 3
+1
+mkdir c:\db2\data\shard2-0
+mkdir c:\db2\data\shard2-1
+mkdir c:\db2\data\shard2-2
+
+2 
+각 창에 명령어를 하나씩 실행해야 함. 
 mongod --shardsvr --replSet shard2 --port 27041 --bind_ip 0.0.0.0 --dbpath /db2/data/shard2-0
 mongod --shardsvr --replSet shard2 --port 27042 --bind_ip 0.0.0.0 --dbpath /db2/data/shard2-1
 mongod --shardsvr --replSet shard2 --port 27043 --bind_ip 0.0.0.0 --dbpath /db2/data/shard2-2
@@ -154,7 +153,10 @@ members: [
 }
 )
 
-설정 참고 
+---------------------------------------------------------------------------------------------
+
+설정 참고
+유저 등록, 키 값 등록시 참고사항 (현재, 넘어가기)
 security:
   keyFile : C:\Program Files\MongoDB\Server\4.4\keyFile.key
   clusterAuthMode : keyFile
@@ -162,32 +164,35 @@ security:
 replication :
   replSetName : rs0
 
-
+-----------------------------------------------------------------------------------------------
 
 클라이언트에서 연결 
-
 mongos 설정하기. - 상용5
 
 localhost -> 상용1
+로컬호스트(개인연습)
 mongos --configdb config0/localhost:27018 --port 20000
 
+예시
 mongos --configdb config0/10.100.201.87:27018 --port 20000
 
+팀원과 할때
 mongos --configdb config0/<설정서버아이피>:27018 --port 20000
 
 
 
 mongosh shell 접속 
 여기로 접속
-mongosh --port 20000 
+mongosh --port 20000
 
-방법만 참고
+방법만 참고 (현재, 넘어가기)
 다른 아이피 접속하는 옵션 추가
 mongosh --host <상대방 아이피> --port 20000
 
 mongosh --port 20000 -u fred -p 1234
 
-
+-------------------------------------------------------------------
+(현재, 넘어가기)
 use admin
 db.grantRolesToUser("fred", ["clusterAdmin"])
 
@@ -199,23 +204,22 @@ db.createUser(
     roles: [ { role: "readWrite", db: "test2345" } ]
   }
 )
-
-
-상용 5 
-localhost -> 상용2 아이피 
-sh.addShard("shard0/localhost:27021")
-sh.addShard("shard1/localhost:27031")
-sh.addShard("shard2/localhost:27041")
+--------------------------------------------------------------------
 
 메모 , 7.0.12 에서 
 과반수 동의건 설정 필요
 클러스터 전역의 기본 쓰기 우려를 과반수(w: "majority")로 설정
+1
 use admin
+
+2
 db.adminCommand({
   setDefaultRWConcern: 1,
   defaultWriteConcern: { w: "majority" }
 })
 
+3
+확인용
 db.adminCommand({ getDefaultRWConcern: 1 });
 
 각 샤드 0
@@ -225,8 +229,13 @@ rs.remove("localhost:27033");
 각 샤드 2
 rs.remove("localhost:27043");
 
+4
+개인용, 로컬호스트
+sh.addShard("shard0/localhost:27021")
+sh.addShard("shard1/localhost:27031")
+sh.addShard("shard2/localhost:27041")
 
-
+팀용
 sh.addShard("shard0/10.100.201.87:27021")
 sh.addShard("shard1/10.100.201.87:27031")
 sh.addShard("shard2/10.100.201.87:27041")
@@ -234,30 +243,50 @@ sh.addShard("shard2/10.100.201.87:27041")
 sh.addShard("shard0/10.100.201.52:27021")
 sh.addShard("shard1/10.100.201.52:27031")
 sh.addShard("shard2/10.100.201.52:27041")
+----------------------------------------------------------------------
+몽구스 라우터에 샤드 서버 등록 후
+샤딩을 할 데이터베이스와 컬렉션을 저장
 
+5
 use config
+
+6
 db.shards.find()
+
+7
 use config
 
+8
 sh.enableSharding("test2345")
+8-1
 db.test.createIndex({x:1})
+8-2
+sh.shardCollection("test2345.fs.chunks", { files_id: 1, n: 1 })
+8-3
+db.fs.files.createIndex({ "_id": "hashed" })
+8-4
+sh.shardCollection("test2345.fs.files", { "_id": "hashed" });
 
-use admin 
+9
+use admin
 
+10
 sh.shardCollection("test2345.test",{
 x:"hashed"
 })
 
-
-
+11
 use test2345
 
-for(var i = 1; i<12001; i++){
+12
+for(var i = 1; i<12000; i++){
 db.test.insertOne({x:i,ename:i,sal:100})
 }
-
+ 
+13
+입력후, 분산 결과 조회. 
 db.test.getShardDistribution()
-
+------------------------------------------------------------------------
 shard0 ::
  mongosh --port 27021
 use test2345
@@ -282,3 +311,33 @@ shard0:PRIMARY> use test2345
 switched to db test2345
 shard0:PRIMARY> db.test.count()
 3468
+--------------------------------------------------------------------
+리액트, 스프링, 몽고디비 연동시, 파일 이미지를 연동할 때, 참고할 , 
+테이블, 데이터베이스 설정 참고, !!!
+
+-- 참고, 이미지 파일 저장 시, 
+순서1
+// "files_id"를 기준으로 fs.chunks 컬렉션을 샤딩합니다.
+//sh.shardCollection("test2345.fs.chunks", { "files_id": 1 });
+sh.shardCollection("test2345.fs.chunks", { files_id: 1, n: 1 })
+
+// 기존 설정 삭제 예시, 
+// mongos 셸에서 실행
+// 1. fs.chunks 컬렉션 삭제
+db.getSiblingDB('test2345').fs.chunks.drop()
+
+// 2. fs.files 컬렉션 삭제
+db.getSiblingDB('test2345').fs.files.drop()
+
+// 수정, 분산 저장 용. 
+// 파일 ID(files_id)와 청크 순번(n)을 결합한 복합 샤드 키를 사용
+sh.shardCollection("test2345.fs.chunks", { files_id: 1, n: 1 })
+
+
+순서2
+db.fs.files.createIndex({ "_id": "hashed" })
+// "_id"를 기준으로 fs.files 컬렉션을 샤딩합니다.
+
+순서3
+sh.shardCollection("test2345.fs.files", { "_id": "hashed" });
+--------------------------------------------------------------------
